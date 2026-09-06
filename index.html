@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Здравсити - запись на биоимпеданс</title>
-<meta http-equiv="refresh" content="4;url=https://f99b5e4429d8c2.lhr.life/">
+<meta http-equiv="refresh" content="4;url=https://5-129-229-28.sslip.io/">
 <style>
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Montserrat,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px}
 h1{font-size:26px;font-weight:800;margin:0 0 6px}
@@ -17,7 +17,7 @@ a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:10px;back
 <div>
 <h1>Биоимпеданс<span>открываем запись</span></h1>
 <p>Если страница не открылась сама, нажмите кнопку.</p>
-<a id="go" href="https://f99b5e4429d8c2.lhr.life/">Перейти к записи</a>
+<a id="go" href="https://5-129-229-28.sslip.io/">Перейти к записи</a>
 </div>
 <script>
 // Pages кешируется браузером на 10 минут, а адрес туннеля меняется чаще.
@@ -30,8 +30,8 @@ function go(base) {
 }
 fetch('/current.txt?' + Date.now(), {cache: 'no-store'})
   .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-  .then(function (u) { u = u.trim(); go(/^https:\/\/[a-z0-9.-]+$/.test(u) ? u : 'https://f99b5e4429d8c2.lhr.life'); })
-  .catch(function () { go('https://f99b5e4429d8c2.lhr.life'); });
+  .then(function (u) { u = u.trim(); go(/^https:\/\/[a-z0-9.-]+$/.test(u) ? u : 'https://5-129-229-28.sslip.io'); })
+  .catch(function () { go('https://5-129-229-28.sslip.io'); });
 </script>
 </body>
 </html>
