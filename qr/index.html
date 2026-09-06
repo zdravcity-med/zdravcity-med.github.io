@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Здравсити - QR для посетителей</title>
+<style>
+:root{color-scheme:light}
+html,body{margin:0;height:100%;background:#F2F5FA;font-family:Montserrat,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none}
+.wrap{height:100%;display:flex;flex-direction:column}
+.tabs{display:flex;gap:10px;padding:calc(env(safe-area-inset-top, 0px) + 14px) 14px 10px}
+.tab{flex:1;padding:16px 10px;border:none;border-radius:14px;font-size:19px;font-weight:700;font-family:inherit;cursor:pointer;background:#E3E9F2;color:#39435A}
+.tab.active-bio{background:#0032BC;color:#fff}
+.tab.active-hr{background:#1E88E5;color:#fff}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;padding:6px 14px calc(env(safe-area-inset-bottom, 0px) + 10px);min-height:0}
+.stage img{max-width:100%;max-height:100%;border-radius:22px;box-shadow:0 10px 40px rgba(10,30,80,.18)}
+.link{display:block;text-align:center;padding:12px 0 calc(env(safe-area-inset-bottom, 0px) + 14px);font-size:15px;color:#5C6470;text-decoration:none}
+.link b{color:#1E88E5}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active-bio" id="tb" onclick="show('bio')">Биоимпеданс - очередь</button>
+    <button class="tab" id="th" onclick="show('hr')">Индекс здоровья HR - опрос</button>
+  </div>
+  <div class="stage">
+    <img id="bio" src="bioimpedance.svg" alt="QR: запись в очередь на биоимпеданс">
+    <img id="hr" src="survey.svg" alt="QR: опрос Индекс здоровья HR" hidden>
+  </div>
+  <a class="link" id="lnk" href="https://5-129-229-28.sslip.io/" target="_blank" rel="noopener">
+    Открыть запись на планшете
+  </a>
+</div>
+<script>
+var LINKS = {
+  bio: { href: 'https://zdravcity-med.github.io/', label: 'Открыть запись на планшете' },
+  hr:  { href: 'https://a26449.webask.io/rlfrhrnne', label: 'Открыть опрос на планшете' }
+}
+function show(which){
+  document.getElementById('bio').hidden = which !== 'bio'
+  document.getElementById('hr').hidden = which !== 'hr'
+  document.getElementById('tb').className = 'tab' + (which === 'bio' ? ' active-bio' : '')
+  document.getElementById('th').className = 'tab' + (which === 'hr' ? ' active-hr' : '')
+  var l = document.getElementById('lnk')
+  l.href = LINKS[which].href
+  l.innerHTML = LINKS[which].label
+}
+show('bio')
+</script>
+</body>
+</html>
