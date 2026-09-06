@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Здравсити - запись на биоимпеданс</title>
+<meta http-equiv="refresh" content="1;url=https://localhost.run/">
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#000;font-family:Montserrat,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px}
+h1{font-size:26px;font-weight:800;margin:0 0 6px}
+h1 span{display:block;color:#0032BC}
+p{color:#5C6470;font-size:14px}
+a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:10px;background:#0032BC;color:#fff;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div>
+<h1>Биоимпеданс<span>открываем запись</span></h1>
+<p>Если страница не открылась сама, нажмите кнопку.</p>
+<a id="go" href="https://localhost.run/">Перейти к записи</a>
+</div>
+<script>
+// Сохраняем хвост пути (/admin, /board) при переходе на текущий адрес туннеля
+var base = 'https://localhost.run';
+var rest = location.pathname.replace(/^\/bio\/?/, '');
+var target = base + '/' + rest + location.search;
+document.getElementById('go').href = target;
+location.replace(target);
+</script>
+</body>
+</html>
