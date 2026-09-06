@@ -23,7 +23,7 @@ a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:10px;back
 // Сохраняем хвост пути (/admin, /board) при переходе на текущий адрес туннеля
 var base = 'https://c7ad4782e98c83.lhr.life';
 var rest = location.pathname.replace(/^\/(bio\/?)?/, '');
-var target = base + '/' + rest + location.search;
+var target = base + '/' + rest + location.search + location.hash;
 document.getElementById('go').href = target;
 location.replace(target);
 </script>
