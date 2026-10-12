@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Здравсити - табло биоимпеданса</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap">
+<style>
+:root{--blue:#0032BC;--blue2:#193FBD;--blue-deep:#0025A8;--soft:#E7EFF8;--line:#E1E6EF;--ink:#000;--muted:#5C6470;--green:#0A8A5E}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:#fff;color:var(--ink);font-family:Montserrat,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 24px 40px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:34px;height:34px}
+.brand .w{font-weight:800;font-size:24px;letter-spacing:-.02em;color:var(--blue);line-height:1}
+.brand .m{font-size:11px;font-weight:600;color:var(--blue);letter-spacing:.14em;text-transform:uppercase;line-height:1;margin-top:3px}
+.clock{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue)}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.08;margin:22px 0 22px;font-weight:800;letter-spacing:-.02em}
+h1 span{display:block;color:var(--blue)}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.cur{background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 60%,var(--blue-deep) 100%);color:#fff;border-radius:16px;padding:26px 28px;min-height:230px;position:relative;overflow:hidden}
+.cur.idle{background:var(--soft);color:var(--ink)}
+.cur.call{background:linear-gradient(135deg,#B45309,#D97706);animation:pulse 1.6s ease-in-out infinite}
+.cur.call .lbl,.cur.call .sub{color:#FDE7C4}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.45)}50%{box-shadow:0 0 0 18px rgba(217,119,6,0)}}
+.cur .lbl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#C7D3F5}
+.cur.idle .lbl{color:var(--muted)}
+.cur .num{font-size:clamp(64px,10vw,120px);font-weight:800;line-height:1;letter-spacing:-.03em;margin:8px 0 6px;font-variant-numeric:tabular-nums}
+.cur .name{font-size:clamp(18px,2.6vw,28px);font-weight:600}
+.cur .sub{font-size:14px;margin-top:8px;color:#C7D3F5;font-weight:500}
+.cur.idle .sub{color:var(--muted)}
+.cur .heart{position:absolute;right:-20px;bottom:-30px;width:220px;height:220px;opacity:.12}
+.cur.idle .num,.cur.idle .heart{display:none}
+.free{display:none;align-items:center;gap:26px;margin:18px 0 10px}
+.cur.idle .free{display:flex}
+.free svg{width:96px;height:96px;flex:none;animation:beat 2.4s ease-in-out infinite;transform-origin:center}
+.free .big{font-size:clamp(30px,4vw,48px);font-weight:800;color:var(--blue);line-height:1.05}
+.free .small{font-size:16px;color:var(--muted);font-weight:500;margin-top:6px}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.08)}28%{transform:scale(1)}42%{transform:scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.free svg{animation:none}}
+.cur.idle .name,.cur.idle .sub{display:none}
+.next{border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.next h2{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:grid;grid-template-columns:110px 72px 1fr;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.list li:first-child{border-top:0}
+.list .num{font-size:26px;font-weight:800;color:var(--blue)}
+.list .t{font-size:18px;font-weight:600;color:var(--muted)}
+.list .n{font-size:18px;font-weight:600}
+.list li.soon .num{color:var(--green)}
+.list li.late .t{color:#C2410C}
+.empty{color:var(--muted);font-size:16px;padding:8px 0}
+.foot{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+.chip{background:var(--soft);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:#1C2A36}
+.chip b{color:var(--blue)}
+.chip.brk{background:#FFE9C7;color:#7A4A00}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 3.5 5.2v6.2C3.5 16.6 7.1 20.7 12 22c4.9-1.3 8.5-5.4 8.5-10.6V5.2L12 2Z" fill="#0032BC"/><path d="M12 17.2s-4.3-2.6-4.3-5.7a2.4 2.4 0 0 1 4.3-1.5 2.4 2.4 0 0 1 4.3 1.5c0 3.1-4.3 5.7-4.3 5.7Z" fill="#fff"/></svg>
+      <div><div class="w">здравсити</div><div class="m">медицина</div></div>
+    </div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
+  <h1>Биоимпеданс<span>кто подходит</span></h1>
+
+  <div class="grid">
+    <div class="cur idle" id="cur">
+      <svg class="heart" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11Z" fill="#fff"/></svg>
+      <div class="lbl" id="curLbl">Сейчас на процедуре</div>
+      <div class="free">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 3.5 5.2v6.2C3.5 16.6 7.1 20.7 12 22c4.9-1.3 8.5-5.4 8.5-10.6V5.2L12 2Z" fill="#0032BC"/><path d="M12 17.2s-4.3-2.6-4.3-5.7a2.4 2.4 0 0 1 4.3-1.5 2.4 2.4 0 0 1 4.3 1.5c0 3.1-4.3 5.7-4.3 5.7Z" fill="#fff"/></svg>
+        <div><div class="big" id="freeBig">Свободно, подходите</div><div class="small" id="freeSmall">Наведите камеру на QR-код и получите талон</div></div>
+      </div>
+      <div class="num" id="curNum"></div>
+      <div class="name" id="curName">никого</div>
+      <div class="sub" id="curSub"></div>
+    </div>
+    <div class="next">
+      <h2>Следующие</h2>
+      <ul class="list" id="next"></ul>
+      <div class="empty" id="nextEmpty" hidden>Очередь пуста</div>
+    </div>
+  </div>
+  <div class="foot">
+    <span class="chip">В очереди <b id="waiting">-</b></span>
+    <span class="chip">Ближайшее свободное <b id="nextFree">--:--</b></span>
+    <span class="chip brk" id="brk" hidden></span>
+
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const STABLE = 'https://zdravcity-med.github.io';
+const h = new URLSearchParams(location.hash.slice(1));
+const pin = h.get('p') || localStorage.getItem('bioq.pin') || '';
+if (pin) { try { localStorage.setItem('bioq.pin', pin); } catch (e) {} }
+let fails = 0;
+const toMin = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+const fmtMin = v => String(Math.floor(v / 60) % 24).padStart(2, '0') + ':' + String(v % 60).padStart(2, '0');
+
+async function load() {
+  let entries, now, nextFree, waiting, brk;
+  if (pin) {
+    const r = await fetch('/api/admin/state', {headers: {'X-Pin': pin}});
+    if (r.ok) {
+      const s = await r.json();
+      entries = s.entries.filter(e => e.status === 'waiting' || e.status === 'inprogress');
+      now = s.now; nextFree = s.nextFree; waiting = entries.length;
+      const nowMin = toMin(now);
+      const b = (s.breaks || []).map(x => ({start: x.startText, end: x.endText, endMin: x.end, startMin: x.start})).filter(x => x.endMin > nowMin).sort((a, c) => a.startMin - c.startMin)[0];
+      if (b) brk = {start: b.start, end: b.end, now: b.startMin <= nowMin};
+    }
+  }
+  if (!entries) {
+    const s = await (await fetch('/api/state')).json();
+    entries = s.queue; now = s.now; nextFree = s.nextFree; waiting = s.waiting; brk = s.break;
+  }
+  $('clock').textContent = now; $('waiting').textContent = waiting; $('nextFree').textContent = nextFree;
+  $('brk').hidden = !brk;
+  if (brk) $('brk').textContent = (brk.now ? 'Технический перерыв до ' : 'Перерыв ' + brk.start + ' - ') + brk.end;
+  const cur = entries.find(e => e.status === 'inprogress');
+  const first = entries[0];
+  const box = $('cur');
+  box.classList.toggle('idle', !cur && !first);
+  box.classList.remove('call');
+  if (cur) {
+    $('curLbl').textContent = 'Сейчас на процедуре';
+    $('curNum').textContent = cur.num; $('curName').textContent = 'на процедуре'; $('curSub').textContent = 'начало ' + cur.time;
+  } else if (first) {
+    const d = toMin(first.time) - toMin(now);
+    const calling = d <= 2;
+    box.classList.toggle('call', calling);
+    $('curLbl').textContent = calling ? 'Подходите к стенду' : 'Следующий';
+    $('curNum').textContent = first.num;
+    $('curName').textContent = calling ? 'время ' + first.time : 'ждём к ' + first.time;
+    $('curSub').textContent = calling ? 'Назовите номер оператору' : 'Нажмите "Начать" в панели оператора, когда подойдёт';
+  } else {
+    $('curLbl').textContent = 'Очередь свободна';
+  }
+  const rest = entries.filter(e => e !== cur && e !== (cur ? null : entries[0]));
+  const ul = $('next'); ul.innerHTML = '';
+  $('nextEmpty').hidden = rest.length > 0;
+  const nowM = toMin(now);
+  for (const e of rest.slice(0, 8)) {
+    const li = document.createElement('li');
+    const d = toMin(e.time) - nowM;
+    if (d <= 5) li.classList.add('soon');
+    if (d < 0) li.classList.add('late');
+    li.innerHTML = `<span class="num">${e.num}</span><span class="t">${e.time}</span><span class="n"></span>`;
+    li.querySelector('.n').textContent = d < 0 ? 'опаздывает' : (d <= 5 ? 'скоро' : '');
+    ul.appendChild(li);
+  }
+}
+function tick() {
+  load().then(() => { fails = 0; }).catch(e => {
+    if (e instanceof TypeError && ++fails >= 2) location.replace(STABLE + '/board' + (pin ? '#p=' + encodeURIComponent(pin) : ''));
+  });
+}
+tick(); setInterval(tick, 4000);
+</script>
+</body>
+</html>
